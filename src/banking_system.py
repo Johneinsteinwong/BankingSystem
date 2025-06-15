@@ -11,10 +11,10 @@ class BankingSystem:
         csv_path (str): Path to the CSV file for storing account data.
         accounts (Dict[int, Account]): Dictionary mapping account IDs to Account objects.
     """
-    def __init__(self, csv_path: str = 'accounts.csv'):
+    def __init__(self, csv_path: str = 'data/accounts.csv'):
         """Initializes a BankingSystem instance, loading accounts from a CSV file.
         Args:
-            csv_path (str, optional): Path to the CSV file. Defaults to 'accounts.csv'.
+            csv_path (str, optional): Path to the CSV file. Defaults to 'data/accounts.csv'.
         """
         self.csv_path = csv_path
         self.accounts: Dict[int, Account] = self.load_state()

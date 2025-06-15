@@ -61,12 +61,12 @@ def main(bank: BankingSystem = None):
 
     Args:
         bank (BankingSystem, optional): The banking system instance to use. If None,
-            creates a new BankingSystem with default CSV path 'accounts.csv'.
+            creates a new BankingSystem with default CSV path 'data/accounts.csv'.
             Defaults to None.
 
     """
     if bank is None:
-        bank = BankingSystem(csv_path='accounts.csv')
+        bank = BankingSystem(csv_path='data/accounts.csv')
     current_user = None # None if not logged in
 
     # The main interactive loop
