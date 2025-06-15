@@ -23,12 +23,33 @@ def test_deposit_valid(account):
     assert "Deposited 50" in message # Successful message
 
 # Test for rounding error
-def test_deposit_valid(account):
+def test_deposit_rounding_error(account):
     # Using floating point number to calculate 100 + 0.1 + 0.1 would result in 100.19999999999999
     success, message = account.deposit("0.1")
     success, message = account.deposit("0.1")
 
     assert account.balance == Decimal('100.2') # Using Decimal would result in 100.2 correctly
+
+def test_withdraw_rounding_error(account):
+    # Using floating point number to calculate 100 - 0.1 - 0.1 would result in 99.80000000000001
+    success, message = account.withdraw("0.1")
+    success, message = account.withdraw("0.1")
+
+    assert account.balance == Decimal('99.8') # Using Decimal would result in 99.8 correctly
+
+# Transfer valid positive amount
+def test_transfer_rounding_error(bank_system, account):
+    recipient = Account(id=2, name="Bob", balance=Decimal('100')) # Create recipient account with balance 50
+    bank_system.accounts = {
+        1: account, 
+        2: recipient
+    }
+    success, message = account.transfer("0.1", 2, bank_system) 
+    success, message = account.transfer("0.1", 2, bank_system)
+
+    assert account.balance == Decimal('99.8') # 100 - 0.1 - 0.1 != 99.80000000000001
+    assert recipient.balance == Decimal('100.2') # 100 + 0.1 + 0.1 != 100.19999999999999
+    
 
 # Deposit invalid negative amount
 def test_deposit_negative(account):
