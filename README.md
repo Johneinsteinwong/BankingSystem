@@ -16,13 +16,13 @@ A command-line banking application that allows users to create accounts, log in,
 ```
 BankingSystem/
 ├── data/
-│   ├── accounts.csv      # CSV file for account persistence (created by program if not exists)
+│   ├── accounts.csv      # CSV file for persistence storage (created by program if not exists)
 ├── src/
 │   ├── __init__.py
-│   ├── main.py           # Main interactive program
+│   ├── main.py           # Main interactive Banking System program
 │   ├── account.py        # Account class for account operations
 │   ├── banking_system.py # BankingSystem class for account management
-│   ├── utils.py          # Utility functions (e.g., decimal conversion)
+│   ├── utils.py          # Utility functions (e.g., decimal conversion for exact arithmetic)
 ├── tests/
 │   ├── __init__.py
 │   ├── test_main.py      # Tests for main.py
@@ -101,42 +101,63 @@ The `-v` flag provides verbose output, showing test results for `test_main.py`, 
    You can now login with your account ID.
    ```
 
-2. **Log In and Transfer**:
+2. **Log In and Deposit**:
    ```
-   Do you have an account? Type 'yes' to login, or 'no' to create an account: yes
-   Please enter your account ID to login: 1
-   Welcome back, Alice! Your current balance is 100.
-   Please enter 'd' to deposit, 'w' to withdraw, 't' to transfer, or 'q' to quit: t
-   Enter the recipient's account ID: 2
-   Recipient with ID 2 does not exist.
+    Welcome to Simple Banking System.
+    Do you have an account? Type 'yes' to login, or 'no' to create an account: yes
+    Please enter your account ID to login: 1
+    Welcome back, Alice! Your current balance is 100.
+    Please enter 'd' to deposit, 'w' to withdraw, 't' to transfer, or 'q' to quit: d
+    Enter the amount to deposit: 100
+    Deposited 100 to account 1. New balance: 200.
    ```
 
-3. **Sample accounts.csv**:
+3. **Withdraw**
+    ```
+    Please enter 'd' to deposit, 'w' to withdraw, 't' to transfer, or 'q' to quit: w
+    Enter the amount to withdraw: 50
+    Withdrew 50 from account 1. New balance: 150
+    ```
+4. **Transfer**
+   ```
+    Do you have an account? Type 'yes' to login, or 'no' to create an account: no
+    Please enter your name to create an account: Bob
+    Please enter an initial balance: 200
+    Account created for Bob with ID 2 and initial balance 200.
+    You can now login with your account ID.
+    Please enter 'd' to deposit, 'w' to withdraw, 't' to transfer, or 'q' to quit: t
+    Enter the recipient's account ID: 1
+    Enter the amount to transfer: 100
+    Transferred 100 to account 1. New balance: 100
+   ```
+
+4. **Sample accounts.csv**:
    After creating an account for Alice:
    ```csv
-   id,name,balance
-   1,Alice,100
+    id,name,balance
+    1,Alice,250
+    2,Bob,100
    ```
 
 ## Testing
 The project includes comprehensive unit tests using pytest, covering:
 - Account creation, deposit, withdrawal, and transfer operations.
 - Banking system account management and CSV persistence.
-- Input validation for non-numeric, negative, or invalid amounts.
+- Input validation for non-numeric, negative, or invalid amounts (NaN or Infinity).
+- Validation of numerical accuracy for arithmetic operations.
 - Edge cases like transfers to non-existent or same accounts.
 
-Run tests locally or in Docker (see above). All tests are located in the `tests/` directory and use fixtures for isolated testing.
+Run tests in Docker (see above). All tests are located in the `tests/` directory and use fixtures for isolated testing.
 
 ## Dependencies
 Listed in `requirements.txt`:
 - `pydantic`: For data validation in the `Account` class.
 - `pytest`: For running unit tests.
-- `python-decimal`: Built-in for precise arithmetic (no additional install needed).
+- `python-decimal`: Built-in for exact arithmetic (no additional install needed).
 
 ## Notes
 - **CSV Persistence**: The program creates `data/accounts.csv` automatically if it doesn’t exist. Ensure the `data/` folder exists on the host and is writable.
-- **Volume Mounting**: The `-v` flag maps the `data/` folder to `/app/data`. Create the `data/` folder to avoid volume mount errors.
-- **Absolute Imports**: The project uses absolute imports (e.g., `from banking_system import BankingSystem`), supported by `sys.path` in `main.py` and `pytest.ini` for tests.
+- **Volume Mounting**: The `-v` flag maps the `data/` folder to `/app/data`. Create the `data/` folder if not exist to avoid volume mount errors.
 - **Windows Paths**: Use PowerShell (`${PWD}`) or Command Prompt (`%CD%`) for volume mounts, as shown above.
 - **Docker Permissions**: Ensure Docker has permission to read/write to `data/` on the host.
 - **BankingSystem Configuration**: Ensure `banking_system.py` uses `csv_path='data/accounts.csv'` to write to `/app/data/accounts.csv`.
